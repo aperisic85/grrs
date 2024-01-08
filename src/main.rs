@@ -11,7 +11,7 @@ struct Cli {
 fn main() {
     let args = Cli::parse();
     let file = File::open(&args.path).expect("cant open file");
-    let mut b_reader = BufReader::new(file);
+    let b_reader = BufReader::new(file);
 
     for line in b_reader.lines() {
         if let Ok(xx) = line {
