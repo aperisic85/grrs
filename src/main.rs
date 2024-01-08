@@ -17,8 +17,6 @@ fn main() {
         if let Ok(xx) = line {
             if xx.contains(&args.pattern) {
                 println!("{}", xx);
-            } else {
-                println!("Not found matching pattern");
             }
         } else {
             println!("there is no lines here");
