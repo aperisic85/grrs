@@ -11,11 +11,16 @@ struct Cli {
 }
 
 fn main() -> Result<()>{
+    let args = Cli::parse();
 
-    let path = "test.txt";
-    let content = std::fs::read_to_string(path)
-        .with_context(|| format!("Could not read file {}", path))?;
-    println!("file content {:?}", content);
+    let content = std::fs::read_to_string(&args.path)
+        .with_context(|| format!("Could not read file {}", args.path.display()))?;
+
+    for line in content.lines(){
+        if line.contains(&args.pattern){
+            println!("{}", line);
+        }
+    }
 
     Ok(())
 }
