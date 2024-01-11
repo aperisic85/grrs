@@ -1,6 +1,9 @@
+use anyhow::{Context, Result};
 use clap::Parser;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+use std::io::{self, Write};
+
+#[derive(Debug)]
+struct CustomError(String);
 
 #[derive(Parser)]
 struct Cli {
@@ -8,18 +11,17 @@ struct Cli {
     path: std::path::PathBuf,
 }
 
-fn main() {
+fn main() -> Result<()> {
     let args = Cli::parse();
-    let file = File::open(&args.path).expect("cant open file");
-    let b_reader = BufReader::new(file);
+    let stdout = io::stdout();
+    let mut handle = stdout.lock();
+    writeln!(handle, "foo: {}", 42)?;
 
-    for line in b_reader.lines() {
-        if let Ok(xx) = line {
-            if xx.contains(&args.pattern) {
-                println!("{}", xx);
-            }
-        } else {
-            println!("there is no lines here");
-        }
-    }
+    let content = std::fs::read_to_string(&args.path)
+        .with_context(|| format!("Could not read file {}", args.path.display()))?;
+    grrs::find_matches(&content, &args.pattern, &mut std::io::stdout());
+
+    Ok(())
 }
+
+
