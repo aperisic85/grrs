@@ -1,6 +1,7 @@
 use clap::Parser;
-use std::fs::File;
-use std::io::{BufRead, BufReader};
+
+#[derive(Debug)]
+struct CustomError(String);
 
 #[derive(Parser)]
 struct Cli {
@@ -8,18 +9,12 @@ struct Cli {
     path: std::path::PathBuf,
 }
 
-fn main() {
-    let args = Cli::parse();
-    let file = File::open(&args.path).expect("cant open file");
-    let b_reader = BufReader::new(file);
+fn main() -> Result<(), CustomError> {
 
-    for line in b_reader.lines() {
-        if let Ok(xx) = line {
-            if xx.contains(&args.pattern) {
-                println!("{}", xx);
-            }
-        } else {
-            println!("there is no lines here");
-        }
-    }
+    let path = "test.txt";
+    let content = std::fs::read_to_string(path)
+        .map_err(|err| CustomError(format!("Error reading `{}` : {}", path, err)))?;
+    println!("file content {:?}", content);
+
+    Ok(())
 }
