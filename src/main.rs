@@ -28,7 +28,7 @@ fn main() -> Result<()> {
 fn find_matches(content: &str, pattern: &str, mut writer: impl std::io::Write) {
     for line in content.lines() {
         if line.contains(pattern) {
-           if let res =  writeln!(writer, "{}", line){}
+            if let _res = writeln!(writer, "{}", line) {}
         }
     }
 }
